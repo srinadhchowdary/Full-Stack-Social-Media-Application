@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 
@@ -21,5 +24,9 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private String gender;
+
+    private List<Integer> Followers = new ArrayList<>();
+    private List<Integer> Following = new ArrayList<>();
 
 }
