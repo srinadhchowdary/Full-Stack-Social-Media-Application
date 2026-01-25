@@ -18,7 +18,7 @@ import java.util.List;
 public class User {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String firstName;
     private String lastName;
@@ -28,5 +28,7 @@ public class User {
 
     private List<Integer> Followers = new ArrayList<>();
     private List<Integer> Following = new ArrayList<>();
+
+    private List<Post> savedPosts = new ArrayList<>();
 
 }
