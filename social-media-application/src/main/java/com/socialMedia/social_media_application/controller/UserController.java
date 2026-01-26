@@ -18,7 +18,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping("/api/users")
     public List<User> getUsers() {
 /*
         List<User> users=new ArrayList<>();
@@ -35,7 +35,7 @@ public class UserController {
         return users;
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/api/users/{userId}")
     public User getUserById(@PathVariable("userId") Integer id) throws Exception {
 
         User user = userService.findUserById(id);
@@ -48,7 +48,7 @@ public class UserController {
         return savedUser;
     }
 
-    @PutMapping("/users/{userId}")
+    @PutMapping("/api/users/{userId}")
     public User updateUser(@RequestBody User user, @PathVariable("userId") Integer userId) throws Exception {
 
         User updatedUser=userService.updateUser(user, userId);
@@ -56,7 +56,7 @@ public class UserController {
         return updatedUser;
     }
 
-    @PutMapping("/users/{userId}/follow/{userToFollowId}")
+    @PutMapping("/api/users/{userId}/follow/{userToFollowId}")
     public User followUserHandler(@PathVariable ("userId") Integer userId,
                                   @PathVariable ("userToFollowId") Integer userToFollowId) throws Exception {
 
@@ -65,13 +65,13 @@ public class UserController {
     }
 
 
-    @GetMapping("/users/search")
+    @GetMapping("/api/users/search")
     public List<User> searchUsers(@RequestParam("query") String query) {
         List<User> users=userService.searchUsers(query);
         return users;
     }
 
-/*
+
     @DeleteMapping("users/{userId}")
     public String deleteUser(@PathVariable("userId") Integer userId) throws Exception {
 
@@ -92,5 +92,4 @@ public class UserController {
         return "User deleted successfully with id "+userId;
     }
 
- */
 }
