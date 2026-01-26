@@ -1,10 +1,7 @@
 package com.socialMedia.social_media_application.models;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,9 +22,13 @@ public class Post {
     private String caption;
     private String image;
     private String video;
+
+    @ManyToOne
     private User user;
-    private LocalDateTime createdAt;
+
+    @ManyToMany
     private List<User> likedBy = new ArrayList<>();
 
+    private LocalDateTime createdAt;
 
 }

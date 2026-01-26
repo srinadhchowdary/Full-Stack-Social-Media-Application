@@ -1,6 +1,7 @@
 package com.socialMedia.social_media_application.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class User {
     private List<Integer> Followers = new ArrayList<>();
     private List<Integer> Following = new ArrayList<>();
 
+    @JsonIgnore
+    @ManyToMany
     private List<Post> savedPosts = new ArrayList<>();
-
 }
