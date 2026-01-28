@@ -1,6 +1,9 @@
 package com.socialMedia.social_media_application.config;
 
+import com.socialMedia.social_media_application.response.AuthResponse;
 import com.socialMedia.social_media_application.service.CustomerUserDetailsService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
     import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -31,25 +35,51 @@ public class JwtValidator extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            String username = jwtProvider.extractUserName(token);
+        try {
+            if (header != null && header.startsWith("Bearer ")) {
+                String token = header.substring(7);
 
-            if (username != null &&
-                    SecurityContextHolder.getContext().getAuthentication() == null &&
-                    jwtProvider.validateToken(token)) {
+                String username = jwtProvider.extractUserName(token);
 
-                UserDetails userDetails =
-                        userDetailsService.loadUserByUsername(username);
+                if (username != null &&
+                        SecurityContextHolder.getContext().getAuthentication() == null &&
+                        jwtProvider.validateToken(token)) {
 
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
+                    UserDetails userDetails =
+                            userDetailsService.loadUserByUsername(username);
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                    UsernamePasswordAuthenticationToken auth =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
             }
+
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            sendError(response, "Token expired");
+            return;
+        }
+        catch (JwtException e) {
+            sendError(response, "Invalid token");
+            return;
         }
 
-        filterChain.doFilter(request, response);
     }
+
+    private void sendError(HttpServletResponse response, String message)
+            throws IOException {
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        AuthResponse authResponse = new AuthResponse(null, message);
+
+        ObjectMapper mapper = new ObjectMapper();
+        response.getWriter().write(mapper.writeValueAsString(authResponse));
+    }
+
+
 }

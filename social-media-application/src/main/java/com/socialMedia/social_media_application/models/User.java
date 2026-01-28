@@ -27,8 +27,11 @@ public class User {
     private String password;
     private String gender;
 
-    private List<Integer> Followers = new ArrayList<>();
-    private List<Integer> Following = new ArrayList<>();
+    @ElementCollection
+    private List<Integer> followers = new ArrayList<>();
+
+    @ElementCollection
+    private List<Integer> following = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany

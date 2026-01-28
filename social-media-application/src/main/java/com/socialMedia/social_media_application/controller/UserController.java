@@ -4,6 +4,9 @@ import com.socialMedia.social_media_application.UserRepository.UserRepository;
 import com.socialMedia.social_media_application.models.User;
 import com.socialMedia.social_media_application.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,19 +46,19 @@ public class UserController {
     }
 
 
-    @PutMapping("/api/users/{userId}")
-    public User updateUser(@RequestBody User user, @PathVariable("userId") Integer userId) throws Exception {
-
-        User updatedUser=userService.updateUser(user, userId);
+    @PutMapping("/api/users")
+    public User updateUser(@RequestHeader("Authorization") String jwt,@RequestBody User user) throws Exception {
+        User reqUser=userService.findUserByJwt(jwt);
+        User updatedUser=userService.updateUser(user, reqUser.getId());
 
         return updatedUser;
     }
 
-    @PutMapping("/api/users/{userId}/follow/{userToFollowId}")
-    public User followUserHandler(@PathVariable ("userId") Integer userId,
-                                  @PathVariable ("userToFollowId") Integer userToFollowId) throws Exception {
+    @PutMapping("/api/users/follow/{userToFollowId}")
+    public User followUserHandler(@RequestHeader("Authorization") String jwt,@PathVariable ("userToFollowId") Integer userToFollowId) throws Exception {
 
-        User user=userService.followUser( userId, userToFollowId);
+        User reqUser = userService.findUserByJwt(jwt);
+        User user=userService.followUser(reqUser.getId(), userToFollowId);
         return user;
     }
 
@@ -66,6 +69,21 @@ public class UserController {
         return users;
     }
 
+
+    @GetMapping("/api/users/profile")
+    public ResponseEntity<?> getUserFromToken(@RequestHeader("Authorization") String jwt) {
+
+        User user = userService.findUserByJwt(jwt);
+
+        if (user == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid or expired token");
+        }
+
+        user.setPassword(null);
+        return ResponseEntity.ok(user);
+    }
 
     @DeleteMapping("users/{userId}")
     public String deleteUser(@PathVariable("userId") Integer userId) throws Exception {

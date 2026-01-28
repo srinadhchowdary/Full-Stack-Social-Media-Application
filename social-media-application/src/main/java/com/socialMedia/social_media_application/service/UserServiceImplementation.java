@@ -1,6 +1,7 @@
 package com.socialMedia.social_media_application.service;
 
 import com.socialMedia.social_media_application.UserRepository.UserRepository;
+import com.socialMedia.social_media_application.config.JwtProvider;
 import com.socialMedia.social_media_application.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,6 +85,9 @@ public class UserServiceImplementation implements UserService {
         if(user.getEmail()!=null) {
             oldUser.setEmail(user.getEmail());
         }
+        if(user.getGender() != null){
+            oldUser.setGender(user.getGender());
+        }
 
         User updatedUser=userRepository.save(oldUser);
         return updatedUser;
@@ -92,5 +96,16 @@ public class UserServiceImplementation implements UserService {
     @Override
     public List<User> searchUsers(String query) {
         return userRepository.searchUser(query);
+    }
+
+    @Override
+    public User findUserByJwt(String jwt) {
+
+        String email = JwtProvider.getEmailFromJwtToken(jwt);
+        User user = findUserByEmail(email);
+        if (user != null) {
+            return user;
+        }
+        return null;
     }
 }

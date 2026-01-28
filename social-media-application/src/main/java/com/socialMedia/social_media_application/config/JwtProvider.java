@@ -56,4 +56,22 @@ public class JwtProvider {
                 .getBody();
         return resolver.apply(claims);
     }
+
+    public static String getEmailFromJwtToken(String jwt) {
+
+        if (jwt.startsWith("Bearer ")) {
+            jwt = jwt.substring(7);
+        }
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+
+        return claims.getSubject();
+    }
+
+
+
 }
