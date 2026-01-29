@@ -31,7 +31,7 @@ public class PostController {
         return new ResponseEntity<>(createdPost, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/posts/{postId}/delete")
+    @DeleteMapping("/api/posts/{postId}/delete")
     public ResponseEntity<ApiResponse> deletePost(
             @PathVariable Integer postId,
             @RequestHeader("Authorization") String jwt) {
@@ -56,13 +56,13 @@ public class PostController {
         }
     }
 
-    @GetMapping("/posts/{postId}")
+    @GetMapping("/api/posts/{postId}")
     public ResponseEntity<Post> findPostByIdHandler(@PathVariable Integer postId) throws Exception {
         Post post = postService.findPostById(postId);
         return new ResponseEntity<Post>(post, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/posts/user")
+    @GetMapping("/api/posts/user")
     public ResponseEntity<List<Post>> findUsersPost(@RequestHeader("Authorization") String jwt) {
 
         User reqUser = userService.findUserByJwt(jwt);
@@ -70,13 +70,13 @@ public class PostController {
         return new ResponseEntity<List<Post>>(posts, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/posts")
+    @GetMapping("/api/posts")
     public ResponseEntity<List<Post>> findAllPosts() {
         List<Post> posts = postService.findAllPosts();
         return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
     }
 
-    @PutMapping("/posts/{postId}/save")
+    @PutMapping("/api/posts/{postId}/save")
     public ResponseEntity<Post> savedPostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) throws Exception {
 
         User reqUser = userService.findUserByJwt(jwt);
@@ -85,7 +85,7 @@ public class PostController {
         return new ResponseEntity<Post>(post,HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/posts/{postId}/like")
+    @PutMapping("/api/posts/{postId}/like")
     public ResponseEntity<Post> likedPostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) throws Exception {
 
         User reqUser = userService.findUserByJwt(jwt);
