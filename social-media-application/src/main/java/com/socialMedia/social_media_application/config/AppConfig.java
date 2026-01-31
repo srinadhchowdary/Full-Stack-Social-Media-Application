@@ -23,6 +23,9 @@ public class AppConfig {
     @Autowired
     private JwtValidator jwtValidator;
 
+    @Autowired
+    private JwtAuthEntryPoint jwtAuthEntryPoint;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -32,7 +35,10 @@ public class AppConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll())
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(jwtAuthEntryPoint))
                 .addFilterBefore(jwtValidator, BasicAuthenticationFilter.class);
 
         return http.build();

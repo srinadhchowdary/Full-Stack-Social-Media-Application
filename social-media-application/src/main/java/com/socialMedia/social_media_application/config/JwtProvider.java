@@ -22,7 +22,7 @@ public class JwtProvider {
     }
 
     // ✅ SIMPLE token generation
-    public static String generateToken(String email) {
+    public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuer("Social Media Application")
