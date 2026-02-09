@@ -1,0 +1,32 @@
+.auth-container {
+  height: 100vh;
+}
+
+/* Left image section */
+.auth-image {
+  height: 100%;
+  overflow: hidden;
+}
+
+.auth-image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Right login section */
+.auth-form-section {
+  display: flex;
+  align-items: center;        /* vertical center */
+  justify-content: center;    /* base horizontal center */
+  height: 100%;
+}
+
+/* Bigger login card + move right */
+.auth-card {
+  padding: 40px;
+  width: 720px;       /* card size */
+  margin-left: 80px;
+  height:720px /* distance from center → right */
+}
+

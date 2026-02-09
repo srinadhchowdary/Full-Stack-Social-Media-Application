@@ -1,0 +1,33 @@
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-size: 16px;
+}
+
+.login-form .MuiInputBase-input {
+  font-size: 16px;
+}
+
+.login-form .MuiInputLabel-root {
+  font-size: 15px;
+}
+
+.login-form .MuiFormHelperText-root {
+  font-size: 14px;
+}
+
+.login-form .MuiButton-root {
+  font-size: 16px;
+  padding: 12px 0;
+}
+
+.form-field {
+  margin-bottom: 24px;  /* 👈 SPACE BETWEEN FIELDS */
+}
+
+.error-text {
+  margin-top: 4px;
+  font-size: 12px;
+  color: red;
+}
