@@ -2,6 +2,7 @@ package com.socialMedia.social_media_application.service;
 
 import com.socialMedia.social_media_application.UserRepository.UserRepository;
 import com.socialMedia.social_media_application.config.JwtProvider;
+import com.socialMedia.social_media_application.exceptions.UserException;
 import com.socialMedia.social_media_application.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,12 @@ public class UserServiceImplementation implements UserService {
         return savedUser;    }
 
     @Override
-    public User findUserById(Integer userId) throws Exception {
+    public User findUserById(Integer userId) throws UserException {
         Optional<User> user= userRepository.findById(userId);
         if(user.isPresent()){
             return user.get();
         }
-        throw new Exception("User not found with id "+userId);
+        throw new UserException("User not found with id "+userId);
     }
 
     @Override
@@ -45,10 +46,10 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User followUser(Integer userId, Integer userToFollowId) throws Exception {
+    public User followUser(Integer userId, Integer userToFollowId) throws UserException {
 
         if (userId.equals(userToFollowId)) {
-            throw new Exception("User cannot follow himself");
+            throw new UserException("User cannot follow himself");
         }
 
         User user = findUserById(userId);
@@ -67,11 +68,11 @@ public class UserServiceImplementation implements UserService {
 
 
     @Override
-    public User updateUser(User user, Integer userId) throws Exception {
+    public User updateUser(User user, Integer userId) throws UserException {
         Optional<User> user1=userRepository.findById(userId);
 
         if(user1.isEmpty()){
-            throw new Exception("User not found with id "+userId);
+            throw new UserException("User not found with id "+userId);
         }
 
         User oldUser=user1.get();

@@ -1,6 +1,7 @@
 package com.socialMedia.social_media_application.controller;
 
 import com.socialMedia.social_media_application.UserRepository.UserRepository;
+import com.socialMedia.social_media_application.exceptions.UserException;
 import com.socialMedia.social_media_application.models.User;
 import com.socialMedia.social_media_application.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/api/users/{userId}")
-    public User getUserById(@PathVariable("userId") Integer id) throws Exception {
+    public User getUserById(@PathVariable("userId") Integer id) throws UserException {
 
         User user = userService.findUserById(id);
         return user;
@@ -47,7 +48,7 @@ public class UserController {
 
 
     @PutMapping("/api/users")
-    public User updateUser(@RequestHeader("Authorization") String jwt,@RequestBody User user) throws Exception {
+    public User updateUser(@RequestHeader("Authorization") String jwt,@RequestBody User user) throws UserException {
         User reqUser=userService.findUserByJwt(jwt);
         User updatedUser=userService.updateUser(user, reqUser.getId());
 
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping("/api/users/follow/{userToFollowId}")
-    public User followUserHandler(@RequestHeader("Authorization") String jwt,@PathVariable ("userToFollowId") Integer userToFollowId) throws Exception {
+    public User followUserHandler(@RequestHeader("Authorization") String jwt,@PathVariable ("userToFollowId") Integer userToFollowId) throws UserException {
 
         User reqUser = userService.findUserByJwt(jwt);
         User user=userService.followUser(reqUser.getId(), userToFollowId);
@@ -86,7 +87,7 @@ public class UserController {
     }
 
     @DeleteMapping("users/{userId}")
-    public String deleteUser(@PathVariable("userId") Integer userId) throws Exception {
+    public String deleteUser(@PathVariable("userId") Integer userId) throws UserException {
 
         Optional<User> user=userRepository.findById(userId);
 
@@ -97,7 +98,7 @@ public class UserController {
         }
 
         if(user.isEmpty()){
-            throw new Exception("User not found with id "+userId);
+            throw new UserException("User not found with id "+userId);
         }
         if(oldUser!=null) {
             userRepository.deleteById(userId);
