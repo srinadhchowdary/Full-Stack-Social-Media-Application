@@ -10,36 +10,39 @@ import {
   FormControl
 } from '@mui/material'
 import * as Yup from 'yup'
+import { useDispatch } from 'react-redux'
 import './Login.css'
+import { registerUserAction } from '../../Redux/Auth/auth.action'
 
+/* ---------------- INITIAL STATE ---------------- */
 const initialValues = {
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  gender: ''
+  gender: '',
 }
 
+/* ---------------- VALIDATION ---------------- */
 const validationSchema = Yup.object({
   firstName: Yup.string().required('First name is required'),
   lastName: Yup.string().required('Last name is required'),
-
-  email: Yup.string()
-    .email('Invalid email')
-    .required('Email is required'),
-
+  email: Yup.string().email('Invalid email').required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
     .required('Password is required'),
-
   gender: Yup.string().required('Gender is required'),
 })
 
+/* ---------------- COMPONENT ---------------- */
 const Register = () => {
+  const dispatch = useDispatch()
 
   const handleSubmit = (values) => {
-    console.log('Register Values:', values)
+    console.log('Register Values 👉', values)
+    dispatch(registerUserAction({ data: values }))
   }
+
 
   return (
     <Formik
@@ -100,6 +103,12 @@ const Register = () => {
               <FormControlLabel value="female" control={<Radio />} label="Female" />
               <FormControlLabel value="other" control={<Radio />} label="Other" />
             </Field>
+
+            {touched.gender && errors.gender && (
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                {errors.gender}
+              </div>
+            )}
           </FormControl>
 
           {/* Register Button */}

@@ -2,13 +2,17 @@ import React from 'react'
 import { Formik, Form, Field } from 'formik'
 import { TextField, Button } from '@mui/material'
 import * as Yup from 'yup'
+import { useDispatch } from 'react-redux'
+import { loginUserAction } from '../../Redux/Auth/auth.action'
 import './Login.css'
 
+/* ---------------- INITIAL STATE ---------------- */
 const initialValues = {
-  email: "",
-  password: ""
+  email: '',
+  password: '',
 }
 
+/* ---------------- VALIDATION ---------------- */
 const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email')
@@ -19,10 +23,14 @@ const validationSchema = Yup.object({
     .required('Password is required'),
 })
 
+/* ---------------- COMPONENT ---------------- */
 const Login = () => {
+  const dispatch = useDispatch()
 
-  const handleSubmit = (values) => {
-    console.log('handle Submit', values)
+  const handleSubmit = (values, { setSubmitting }) => {
+    console.log('Login Values:', values)
+    dispatch(loginUserAction({ data: values }))
+    setSubmitting(false)
   }
 
   return (
@@ -31,7 +39,7 @@ const Login = () => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ errors, touched }) => (
+      {({ errors, touched, isSubmitting }) => (
         <Form className="login-form">
 
           {/* Email */}
@@ -56,14 +64,15 @@ const Login = () => {
             helperText={touched.password && errors.password}
           />
 
+          {/* Login Button */}
           <Button
-
-            sx={{padding:".8rem 0rem" }}
             type="submit"
             variant="contained"
             fullWidth
+            disabled={isSubmitting}
+            sx={{ padding: '0.8rem 0' }}
           >
-            Login
+            {isSubmitting ? 'Logging in...' : 'Login'}
           </Button>
 
         </Form>
