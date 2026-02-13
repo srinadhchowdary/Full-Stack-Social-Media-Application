@@ -1,11 +1,14 @@
-import React from 'react'
-import Authentication from './pages/authentication/Authentication'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import HomePage from './pages/HomePage/HomePage'
+import Authentication from './pages/Authentication/Authentication'
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Authentication />
-    </div>
+    <Routes>
+      <Route path="/home/*" element={<HomePage />} />
+      <Route path="/auth/*" element={<Authentication />} />
+      <Route path="/" element={<Navigate to="/home" />} />
+    </Routes>
   )
 }
 
