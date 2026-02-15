@@ -13,6 +13,7 @@ import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
 import './Login.css'
 import { registerUserAction } from '../../Redux/Auth/auth.action'
+import { useNavigate } from 'react-router-dom'
 
 /* ---------------- INITIAL STATE ---------------- */
 const initialValues = {
@@ -37,6 +38,8 @@ const validationSchema = Yup.object({
 /* ---------------- COMPONENT ---------------- */
 const Register = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate();
+
 
   const handleSubmit = (values) => {
     console.log('Register Values 👉', values)
@@ -120,6 +123,19 @@ const Register = () => {
           >
             Register
           </Button>
+
+          <div className="flex justify-center items-center gap-2 mt-4 text-sm">
+            <span className="text-gray-600">
+                Already have an Account?
+              </span>
+              <Button
+                variant="text"
+                size="small"
+                onClick={() => navigate('/signin')}
+              >
+                Sign in
+              </Button>
+            </div>
 
         </Form>
       )}

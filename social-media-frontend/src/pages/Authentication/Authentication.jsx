@@ -3,6 +3,7 @@ import { Card, Grid } from '@mui/material'
 import Login from './Login'
 import Register from './Register'
 import './Authentication.css'
+import { Route, Routes } from 'react-router-dom'
 
 const Authentication = () => {
   return (
@@ -30,8 +31,12 @@ const Authentication = () => {
           </div>
 
           {/* Toggle when needed */}
-          <Login />
-          {/* <Register /> */}
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/signin" element={<Login />} />
+            <Route path="/signup" element={<Register />} />
+          </Routes>
+
         </Card>
       </Grid>
 

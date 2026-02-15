@@ -14,19 +14,18 @@
   object-fit: cover;
 }
 
-/* Right login section */
+/* Right form section */
 .auth-form-section {
   display: flex;
-  align-items: center;        /* vertical center */
-  justify-content: center;    /* base horizontal center */
+  align-items: center;     /* vertical center */
+  justify-content: flex-start; /* move card left */
   height: 100%;
+  padding-left: 40px;     /* control left spacing */
 }
 
-/* Bigger login card + move right */
+/* Login / Register card */
 .auth-card {
-  padding: 40px;
-  width: 720px;       /* card size */
-  margin-left: 80px;
-  height:720px /* distance from center → right */
+  width: 520px;           /* 🔽 reduced size */
+  padding: 32px;          /* slightly tighter */
+  border-radius: 12px;
 }
-

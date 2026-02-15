@@ -5,6 +5,7 @@ import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
 import { loginUserAction } from '../../Redux/Auth/auth.action'
 import './Login.css'
+import { useNavigate } from 'react-router-dom'
 
 /* ---------------- INITIAL STATE ---------------- */
 const initialValues = {
@@ -26,6 +27,8 @@ const validationSchema = Yup.object({
 /* ---------------- COMPONENT ---------------- */
 const Login = () => {
   const dispatch = useDispatch()
+
+  const navigate = useNavigate();
 
   const handleSubmit = (values, { setSubmitting }) => {
     console.log('Login Values:', values)
@@ -75,9 +78,26 @@ const Login = () => {
             {isSubmitting ? 'Logging in...' : 'Login'}
           </Button>
 
+          {/* Signup Redirect */}
+          <div className="flex justify-center items-center gap-2 mt-4 text-sm">
+            <span className="text-gray-600">
+              Don’t have an account?
+            </span>
+            <Button
+              variant="text"
+              size="small"
+              onClick={() => navigate('/signup')}
+            >
+              Sign up
+            </Button>
+          </div>
+
         </Form>
       )}
     </Formik>
+
+    
+    
   )
 }
 
