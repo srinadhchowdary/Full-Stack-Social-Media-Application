@@ -1,22 +1,26 @@
-import React from 'react'
-import { Grid } from '@mui/material'
-import { Route, Routes, useLocation } from 'react-router-dom'
-import MiddlePart from '../../components/MiddlePart/MiddlePart'
-import Reels from '../../components/Reels/Reels'
-import CreateReelsForm from '../../components/Reels/CreateReelsForm'
-import Profile from '../Profile/Profile'
-import HomeRight from '../../components/HomeRight/HomeRight'
-import Sidebar from '../../components/Sidebar/Sidebar'
+import React from "react";
+import { Grid } from "@mui/material";
+import { Route, Routes, useLocation } from "react-router-dom";
+import MiddlePart from "../../components/MiddlePart/MiddlePart";
+import Reels from "../../components/Reels/Reels";
+import CreateReelsForm from "../../components/Reels/CreateReelsForm";
+import Profile from "../Profile/Profile";
+import HomeRight from "../../components/HomeRight/HomeRight";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
-  const location = useLocation()
+  const location = useLocation();
+  
+  const auth = useSelector((store) => store.auth);
+  console.log("HomePage auth:", auth);
 
-  // 👇 detect profile route
-  const isProfilePage = location.pathname.startsWith('/home/profile')
+
+  const isProfilePage = location.pathname.startsWith("/home/profile");
 
   return (
     <div className="px-20">
-      <Grid container spacing={0}>
+      <Grid container>
 
         {/* Sidebar */}
         <Grid size={{ xs: 0, lg: 3 }}>
@@ -38,9 +42,9 @@ const HomePage = () => {
           </Routes>
         </Grid>
 
-        {/* Right Section (HIDDEN on profile) */}
+        {/* Right Section */}
         {!isProfilePage && (
-          <Grid size={{ xs: 0, lg: 3 }} className="relative">
+          <Grid size={{ xs: 0, lg: 3 }}>
             <div className="sticky top-0">
               <HomeRight />
             </div>
@@ -49,7 +53,7 @@ const HomePage = () => {
 
       </Grid>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

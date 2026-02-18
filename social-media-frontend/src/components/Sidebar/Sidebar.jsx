@@ -1,47 +1,54 @@
-import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Divider,
   Avatar,
   Button,
   Menu,
-  MenuItem
-} from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { navigationMenu } from './SidebarNavigation'
+  MenuItem,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { navigationMenu } from "./SidebarNavigation";
+import { useSelector, useDispatch } from "react-redux";
+import { LOGOUT } from "../../Redux/Auth/auth.actionType";
 
 const Sidebar = () => {
-  const [anchorEl, setAnchorEl] = useState(null)
-  const open = Boolean(anchorEl)
+  const auth = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    dispatch({ type: LOGOUT });
+    localStorage.removeItem("jwtToken");
+    handleClose();
+    navigate("/");
+  };
+
+  const handleNavigate = (item) => {
+    // ✅ dynamic profile routing
+    if (item.path === "/home/profile") {
+      navigate(`/home/profile/${auth.user?.id}`);
+    } else {
+      navigate(item.path);
+    }
+  };
 
   return (
-    <div
-      className="
-        h-[95vh]
-        m-4
-        flex
-        flex-col
-        justify-between
-        border
-        border-gray-300
-        rounded-xl
-        bg-white
-        shadow-sm
-        py-5
-      "
-    >
+    <div className="h-[95vh] m-4 flex flex-col justify-between border border-gray-300 rounded-xl bg-white shadow-sm py-5">
       {/* TOP SECTION */}
       <div className="space-y-8 px-5">
-
-        {/* Logo */}
         <div>
           <span className="logo font-bold text-xl">Social Media</span>
         </div>
@@ -49,27 +56,29 @@ const Sidebar = () => {
         {/* Navigation */}
         <div className="space-y-6">
           {navigationMenu.map((item) => {
-            const Icon = item.icon
+            const Icon = item.icon;
+            const isActive = location.pathname.startsWith(item.path);
 
             return (
-              <NavLink
+              <div
                 key={item.path}
-                to={item.path}
-                className={({ isActive }) =>
-                  `
+                onClick={() => handleNavigate(item)}
+                className={`
                   flex items-center space-x-3 px-3 py-2 rounded-lg
                   cursor-pointer transition-all
-                  ${isActive ? 'bg-gray-100 font-bold text-blue-600' : 'hover:bg-gray-50'}
-                  `
-                }
+                  ${
+                    isActive
+                      ? "bg-gray-100 font-bold text-blue-600"
+                      : "hover:bg-gray-50"
+                  }
+                `}
               >
                 <Icon />
                 <p className="text-lg">{item.title}</p>
-              </NavLink>
-            )
+              </div>
+            );
           })}
         </div>
-
       </div>
 
       {/* BOTTOM USER SECTION */}
@@ -79,29 +88,29 @@ const Sidebar = () => {
         <div className="px-5 pt-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Avatar src="https://i.pinimg.com/736x/03/eb/d6/03ebd625cc0b9d636256ecc44c0ea324.jpg" />
+
             <div>
-              <p className="font-bold">Code with Zosh</p>
-              <p className="text-sm opacity-70">@CodeWithMosh</p>
+              <p className="font-bold">
+                {auth.user?.firstName} {auth.user?.lastName}
+              </p>
+              <p className="text-sm opacity-70">
+                @{auth.user?.firstName?.toLowerCase()}_
+                {auth.user?.lastName?.toLowerCase()}
+              </p>
             </div>
           </div>
 
-          {/* Menu Button */}
-          <Button onClick={handleClick}>
+          <Button onClick={handleMenuClick}>
             <MoreVertIcon />
           </Button>
 
-          {/* Dropdown Menu */}
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
