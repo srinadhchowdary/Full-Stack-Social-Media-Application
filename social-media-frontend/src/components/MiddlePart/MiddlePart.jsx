@@ -6,13 +6,19 @@ import ImageIcon from "@mui/icons-material/Image";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ArticleIcon from "@mui/icons-material/Article";
 import PostCard from "../Post/PostCard";
+import CreatePostModal from "../CreatePost/CreatePostModal";
 
 const story = [1, 2, 3, 4, 5];
 const post = [1, 2, 3, 4, 5];
 
 const MiddlePart = () => {
 
+
+  const [openCreatePostModal, setOpenCreatePostModal] = React.useState(false);
+
+  const handleCloseCreatePostModal=()=> setOpenCreatePostModal(false);
   const handleOpenCreatePostModal = () => {
+    setOpenCreatePostModal(true);
     console.log("Open Create Post Modal");
   };
 
@@ -42,6 +48,7 @@ const MiddlePart = () => {
         <div className="flex justify-between">
           <Avatar />
           <input
+            onClick={handleOpenCreatePostModal}
             readOnly
             className="outline-none w-[90%] rounded-full px-5 bg-transparent border border-[#3b4054]"
             type="text"
@@ -77,6 +84,10 @@ const MiddlePart = () => {
         {post.map((item, index) => (
           <PostCard key={index} />
         ))}
+      </div>
+
+      <div>
+        <CreatePostModal handleClose={handleCloseCreatePostModal} open={openCreatePostModal}  />
       </div>
 
     </div>
