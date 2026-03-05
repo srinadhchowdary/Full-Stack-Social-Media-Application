@@ -1,6 +1,9 @@
-import api from "../../config/api"
+import { api } from "../../config/api"
 
 import {
+  CREATE_COMMENT_FAILURE,
+  CREATE_COMMENT_REQUEST,
+  CREATE_COMMENT_SUCCESS,
   CREATE_POST_FAILURE,
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
@@ -21,21 +24,20 @@ export const createPostAction = (postData) => async (dispatch) => {
   dispatch({ type: CREATE_POST_REQUEST })
 
   try {
-    const { data } = await api.post("/api/posts", postData)
+    const { data } = await api.post("/api/posts/create", postData)
 
     dispatch({
       type: CREATE_POST_SUCCESS,
-      payload: data,
+      payload: data
     })
 
     console.log("Post created successfully", data)
 
   } catch (error) {
-    console.log("error", error)
 
     dispatch({
       type: CREATE_POST_FAILURE,
-      payload: error.response?.data?.message || error.message,
+      payload: error.response?.data?.message || error.message
     })
   }
 }
@@ -50,13 +52,14 @@ export const getAllPostAction = () => async (dispatch) => {
 
     dispatch({
       type: GET_ALL_POST_SUCCESS,
-      payload: data,
+      payload: data
     })
 
   } catch (error) {
+
     dispatch({
       type: GET_ALL_POST_FAILURE,
-      payload: error.response?.data?.message || error.message,
+      payload: error.response?.data?.message || error.message
     })
   }
 }
@@ -71,13 +74,14 @@ export const getUsersPostAction = (userId) => async (dispatch) => {
 
     dispatch({
       type: GET_USERS_POST_SUCCESS,
-      payload: data,
+      payload: data
     })
 
   } catch (error) {
+
     dispatch({
       type: GET_USERS_POST_FAILURE,
-      payload: error.response?.data?.message || error.message,
+      payload: error.response?.data?.message || error.message
     })
   }
 }
@@ -92,13 +96,46 @@ export const likePostAction = (postId) => async (dispatch) => {
 
     dispatch({
       type: LIKE_POST_SUCCESS,
-      payload: data,
+      payload: data
     })
 
   } catch (error) {
+
     dispatch({
       type: LIKE_POST_FAILURE,
-      payload: error.response?.data?.message || error.message,
+      payload: error.response?.data?.message || error.message
+    })
+  }
+}
+
+
+/* ---------------- CREATE COMMENT ---------------- */
+export const createCommentAction = (reqData) => async (dispatch) => {
+  dispatch({ type: CREATE_COMMENT_REQUEST })
+
+  try {
+
+    const { data } = await api.post(
+      `/api/comments/post/${reqData.postId}`,
+      reqData.data
+    )
+
+    /* 🔥 IMPORTANT FIX: attach postId */
+    dispatch({
+      type: CREATE_COMMENT_SUCCESS,
+      payload: {
+        ...data,
+        postId: reqData.postId
+      }
+    })
+
+    console.log("Comment created successfully", data)
+
+  } catch (error) {
+
+    dispatch({
+      type: CREATE_COMMENT_FAILURE,
+      payload: error.response?.data?.message || error.message
     })
   }
 }

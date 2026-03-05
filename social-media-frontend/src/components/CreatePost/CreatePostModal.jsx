@@ -12,6 +12,8 @@ import { useFormik } from 'formik'
 import ImageIcon from '@mui/icons-material/Image'
 import VideoCallIcon from '@mui/icons-material/VideoCall'
 import { uploadToCloudinary } from '../../utils/uploadToCloudinary'
+import { useDispatch } from 'react-redux'
+import { createPostAction } from '../../Redux/Post/post.action'
 
 const style = {
   position: 'absolute',
@@ -30,6 +32,7 @@ const CreatePostModal = ({ handleClose, open }) => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const dispatch= useDispatch();  
 
   /* ---------------- FORMIK ---------------- */
   const formik = useFormik({
@@ -42,6 +45,7 @@ const CreatePostModal = ({ handleClose, open }) => {
       setIsLoading(true)
       try {
         console.log('Form Values 👉', values)
+        dispatch(createPostAction(values))
         // API call will go here
         handleClose()
       } finally {
@@ -86,6 +90,7 @@ const CreatePostModal = ({ handleClose, open }) => {
       setIsLoading(false)
     }
   }
+
 
   return (
     <Modal open={open} onClose={handleClose}>

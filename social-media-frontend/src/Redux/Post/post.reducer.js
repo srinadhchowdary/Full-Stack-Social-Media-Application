@@ -1,4 +1,5 @@
 import {
+  CREATE_COMMENT_SUCCESS,
   CREATE_POST_FAILURE,
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
@@ -15,7 +16,7 @@ const initialState = {
   loading: false,
   error: null,
   posts: [],
-  like: null,
+  like: null
 }
 
 const postReducer = (state = initialState, action) => {
@@ -28,26 +29,25 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        error: null,
+        error: null
       }
 
-    /* ---------------- CREATE SUCCESS ---------------- */
+    /* ---------------- CREATE POST SUCCESS ---------------- */
     case CREATE_POST_SUCCESS:
       return {
         ...state,
         post: action.payload,
         posts: [action.payload, ...state.posts],
-        loading: false,
-        error: null,
+        loading: false
       }
 
-    /* ---------------- GET ALL SUCCESS ---------------- */
+    /* ---------------- GET ALL POSTS SUCCESS ---------------- */
     case GET_ALL_POST_SUCCESS:
       return {
         ...state,
         posts: action.payload,
         loading: false,
-        error: null,
+        error: null
       }
 
     /* ---------------- LIKE SUCCESS ---------------- */
@@ -55,12 +55,27 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         like: action.payload,
-        posts: state.posts.map((item) =>
-          item.id === action.payload.id ? action.payload : item
+        posts: state.posts.map((post) =>
+          post.id === action.payload.id ? action.payload : post
         ),
         loading: false,
-        error: null,
+        error: null
       }
+
+    /* ---------------- CREATE COMMENT SUCCESS ---------------- */
+      case CREATE_COMMENT_SUCCESS:
+        return {
+          ...state,
+          posts: state.posts.map((post) => {
+            if (post.id === Number(action.payload.postId)) {
+              return {
+                ...post,
+                comments: [...(post.comments || []), action.payload]
+              }
+            }
+            return post
+          })
+        }
 
     /* ---------------- FAILURE ---------------- */
     case CREATE_POST_FAILURE:
@@ -69,7 +84,7 @@ const postReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload
       }
 
     default:

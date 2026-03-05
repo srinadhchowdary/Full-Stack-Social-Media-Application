@@ -6,6 +6,7 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Divider,
   IconButton,
   Typography
 } from '@mui/material'
@@ -17,80 +18,156 @@ import ShareIcon from '@mui/icons-material/Share'
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
+import { useDispatch } from 'react-redux'
+import { createCommentAction } from '../../Redux/Post/post.action'
 
-const PostCard = () => {
+const PostCard = ({ item }) => {
+
+  const [showComments, setShowComments] = useState(false)
   const [liked, setLiked] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
+
+  const dispatch = useDispatch()
+
+  const handleShowComment = () => setShowComments(!showComments)
+
+  const handleCreateComment = (content) => {
+    if (!content.trim()) return
+
+    const reqData = {
+      postId: item.id,
+      data: { content }
+    }
+
+    dispatch(createCommentAction(reqData))
+  }
 
   return (
     <Card className="p-5 mt-5">
 
-      {/* Header */}
+      {/* ---------------- HEADER ---------------- */}
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }}>
-            S
+            {item.user.firstName?.charAt(0)}
           </Avatar>
         }
         action={
-          <IconButton aria-label="post settings">
+          <IconButton>
             <MoreVertIcon />
           </IconButton>
         }
-        title="Srinadh Bejawada"
-        subheader="@Srinadh_Bejawada"
+        title={`${item.user.firstName} ${item.user.lastName}`}
+        subheader={`@${item.user.firstName.toLowerCase()}_${item.user.lastName.toLowerCase()}`}
       />
 
-      {/* Image */}
-      <CardMedia
-        component="img"
-        height="350"
-        image="https://i.pinimg.com/1200x/8b/8d/68/8b8d68a2fbfd23930de9dbc9da6fb0c2.jpg"
-        alt="post image"
-      />
+      {/* ---------------- IMAGE ---------------- */}
+      {item.image && (
+        <CardMedia
+          component="img"
+          height="350"
+          image={item.image}
+          alt="post"
+        />
+      )}
 
-      {/* Content */}
+      {/* ---------------- CAPTION ---------------- */}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          Nature is the physical world and life in its entirety—encompassing everything
-           not made by humans, from plants and animals to landscapes, weather, and ecosystems. 
-           It is an essential, self-sustaining 
-          force providing vital resources like clean air, water, and food.
+          {item.caption}
         </Typography>
       </CardContent>
 
-      {/* Actions */}
+      {/* ---------------- ACTION BUTTONS ---------------- */}
       <CardActions className="flex justify-between">
 
-        {/* Left actions */}
         <div>
-          <IconButton
-            aria-label="like post"
-            onClick={() => setLiked(!liked)}
-          >
+
+          {/* LIKE */}
+          <IconButton onClick={() => setLiked(!liked)}>
             {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
           </IconButton>
 
-          <IconButton aria-label="comment">
+          {/* COMMENT */}
+          <IconButton onClick={handleShowComment}>
             <ChatBubbleIcon />
           </IconButton>
 
-          <IconButton aria-label="share">
+          {/* SHARE */}
+          <IconButton>
             <ShareIcon />
           </IconButton>
+
         </div>
 
-        {/* Right action */}
-        <div>
-          <IconButton
-            aria-label="save post"
-            onClick={() => setBookmarked(!bookmarked)}
-          >
-            {bookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-          </IconButton>
-        </div>
+        {/* BOOKMARK */}
+        <IconButton onClick={() => setBookmarked(!bookmarked)}>
+          {bookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+        </IconButton>
 
       </CardActions>
+
+      {/* ---------------- COMMENTS SECTION ---------------- */}
+      {showComments && (
+        <section>
+
+          <Divider />
+
+          {/* ADD COMMENT */}
+          <div className="flex items-center space-x-5 mx-3 my-5">
+
+            <Avatar />
+
+            <input
+              className="w-full outline-none bg-transparent border border-[#3b4054] rounded-full px-5 py-2"
+              type="text"
+              placeholder="Write your comment..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  handleCreateComment(e.target.value)
+                  e.target.value = ""
+                }
+              }}
+            />
+
+          </div>
+
+          {/* COMMENT LIST */}
+          <div className="mx-3 space-y-3 my-5 text-sm">
+
+            {item.comments?.map((comment) => (
+
+              <div
+                key={comment.id}
+                className="flex items-center space-x-4"
+              >
+
+                <Avatar
+                  sx={{
+                    height: "2rem",
+                    width: "2rem",
+                    fontSize: ".8rem"
+                  }}
+                >
+                  {comment.user?.firstName?.charAt(0) || "U"}
+                </Avatar>
+
+                <div>
+                  <p className="font-semibold text-xs">
+                    {comment.user?.firstName}
+                  </p>
+                  <p>{comment.content}</p>
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </section>
+      )}
 
     </Card>
   )
